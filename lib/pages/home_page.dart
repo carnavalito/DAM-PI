@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pi/services/firebase_service.dart';
 import 'package:getwidget/getwidget.dart';
 
-import '../widgets/movie-card.dart';
+import '../global/toast.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -17,8 +18,44 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text('Material App Bar'),
+        centerTitle: true,
+        title: const Text('MovieApp'),
+        backgroundColor: const Color(0xff764abc),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xff764abc),
+              ),
+              child: Text('Movie App'),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.add,
+              ),
+              title: const Text('Agregar Pelicula'),
+              onTap: () async {
+                await Navigator.pushNamed(context, '/add');
+                setState(() {});              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.close,
+              ),
+              title: const Text('Cerrar sesion'),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushNamed(context, "/login");
+                showToast(message: "Cerraste Sesion");
+              },
+            ),
+          ],
+        ),
       ),
       body: FutureBuilder(
           future: getMovies(),
@@ -74,21 +111,27 @@ class _HomeState extends State<Home> {
                             child: Column(
                               children: <Widget>[
                                 ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(snapshot.data?[index]['img']),
-                                  ),
+                                  leading: GFAvatar(
+                                      backgroundImage: NetworkImage(
+                                          snapshot.data?[index]['img']),
+                                      shape: GFAvatarShape.standard),
                                   title: Text(snapshot.data?[index]['title']),
-                                  subtitle: Text(snapshot.data?[index]['genre']),
+                                  subtitle:
+                                      Text(snapshot.data?[index]['genre']),
                                   trailing: Text(snapshot.data?[index]['year']),
                                   onTap: (() async {
                                     await Navigator.pushNamed(context, "/edit",
                                         arguments: {
-                                          "title": snapshot.data?[index]['title'],
-                                          "director": snapshot.data?[index]['director'],
-                                          "genre": snapshot.data?[index]['genre'],
+                                          "title": snapshot.data?[index]
+                                              ['title'],
+                                          "director": snapshot.data?[index]
+                                              ['director'],
+                                          "genre": snapshot.data?[index]
+                                              ['genre'],
                                           "img": snapshot.data?[index]['img'],
                                           "year": snapshot.data?[index]['year'],
-                                          "synopsis": snapshot.data?[index]['synopsis'],
+                                          "synopsis": snapshot.data?[index]
+                                              ['synopsis'],
                                           "uid": snapshot.data?[index]['uid'],
                                         });
                                     setState(() {});
@@ -108,7 +151,6 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.pushNamed(context, '/add');
-
           setState(() {});
         },
         child: const Icon(Icons.add),

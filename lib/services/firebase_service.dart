@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/movie_model.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -25,22 +24,27 @@ Future<List> getMovies() async {
 }
 
 //String director,String genre,String img,String synopsis,String year,
-Future<void> addMovie(String title) async {
+Future<void> addMovie(String director, String genre, String img,
+    String synopsis, String title, String year) async {
   await db.collection("movies").add({
-    // "director": director,
-    // "genre": genre,
-    // "img": img,
-    // "synopsis": synopsis,
+    "director": director,
+    "genre": genre,
+    "img": img,
+    "synopsis": synopsis,
     "title": title,
-    // "year": year,
+    "year": year,
   });
 }
 
-Future<void> updateMovie(
-    String uid, String newTitle, String newSynopsis) async {
+Future<void> updateMovie(String uid, String newDirector, String newGenre,
+    String newImg, String newSynopsis, String newTitle, String newYear) async {
   await db.collection("movies").doc(uid).set({
-    "title": newTitle,
+    "director": newDirector,
+    "genre": newGenre,
+    "img": newImg,
     "synopsis": newSynopsis,
+    "title": newTitle,
+    "year": newYear
   });
 }
 

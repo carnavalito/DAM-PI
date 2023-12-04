@@ -28,54 +28,30 @@ class _EditMoviePageState extends State<EditMoviePage> {
     yearController.text = arguments["year"];
 
     Widget titleSection = Container(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.only(left:32),
       child: Row(
         children: [
           Expanded(
-            /*1*/
             child: Column(
               children: [
-                /*2*/
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: titleController,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize:30,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          /*3*/
-          Icon(
-            Icons.star,
-            color: Colors.red[500],
-          ),
-          const Text('41'),
         ],
       ),
     );
 
     Color color = Theme.of(context).primaryColor;
-
-
-
-    GridView items = GridView.count(
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 3,
-      // Generate 100 widgets that display their index in the List.
-      children: List.generate(3, (index) {
-        return Center(
-          child: Text(
-            'Item $index',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        );
-      }),
-    );
 
     Widget textSection = Container(
       padding: const EdgeInsets.all(32),
@@ -84,17 +60,55 @@ class _EditMoviePageState extends State<EditMoviePage> {
         decoration: const InputDecoration(labelText: 'Synopsis'),
         keyboardType: TextInputType.multiline,
         minLines: 1,
-        // <-- SEE HERE
-        maxLines: 10, // <-- SEE HERE
-        // softWrap: true,
+        maxLines: 10,
+      ),
+    );
+    Widget genre = Container(
+      padding: const EdgeInsets.only(left:32),
+      child: TextField(
+        controller: genreController,
+        decoration: const InputDecoration(labelText: 'Genero'),
+      ),
+    );
+    Widget director = Container(
+      padding: const EdgeInsets.only(left:32),
+      child: TextField(
+        controller: directorController,
+        decoration: const InputDecoration(labelText: 'Director'),
+      ),
+    );
+
+    Widget year = Container(
+      padding: const EdgeInsets.only(left:32),
+      child: TextField(
+        controller: yearController,
+        decoration: const InputDecoration(labelText: 'Año'),
+      ),
+    );
+    Widget img = Container(
+      padding: const EdgeInsets.only(left:32),
+      child: TextField(
+        controller: imgController,
+        decoration: const InputDecoration(labelText: 'Image URL'),
       ),
     );
 
     Widget editButton = Column(children: [
       ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.amber,
+            backgroundColor:
+                const Color(0xff764abc), // Text Color (Foreground color)
+          ),
           onPressed: () async {
-            await updateMovie(arguments['uid'], titleController.text,
-                    synopsisController.text)
+            await updateMovie(
+                    arguments['uid'],
+                    directorController.text,
+                    genreController.text,
+                    imgController.text,
+                    synopsisController.text,
+                    titleController.text,
+                    yearController.text)
                 .then((_) {
               Navigator.pop(context);
             });
@@ -102,47 +116,29 @@ class _EditMoviePageState extends State<EditMoviePage> {
           child: const Text("Actualizar"))
     ]);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit Movie'),
-        ),
-        body:
-        ListView(
-          padding: const EdgeInsets.all(15.0),
-          children: [
-            Image.network(
-              arguments['img'],
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-            ),
-            titleSection,
-            textSection,
-            editButton
-          ],
-        ),
-
-
-    );
-  }
-
-  Column _buildButtonColumn(Color color, IconData icon, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: color),
-        Container(
-          margin: const EdgeInsets.only(top: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: color,
-            ),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('MovieApp'),
+        backgroundColor: const Color(0xff764abc),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(15.0),
+        children: [
+          Image.network(
+            arguments['img'],
+            width: 600,
+            height: 400,
+            fit: BoxFit.cover,
           ),
-        ),
-      ],
+          titleSection,
+          genre,
+          director,
+          year,
+          textSection,
+          img,
+          editButton
+        ],
+      ),
     );
   }
 }
